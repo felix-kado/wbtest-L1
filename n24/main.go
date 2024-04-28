@@ -13,12 +13,12 @@ type Point struct {
 	y float64
 }
 
-func NewPoint(x, y float64) *Point {
-	return &Point{x: x, y: y}
+func NewPoint(x, y float64) Point {
+	return Point{x: x, y: y}
 }
 
 // Евклидово расстояние
-func (p *Point) Distance(other *Point) float64 {
+func (p *Point) Distance(other Point) float64 {
 	return math.Sqrt(math.Pow(p.x-other.x, 2) + math.Pow(p.y-other.y, 2))
 }
 

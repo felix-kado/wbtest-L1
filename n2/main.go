@@ -35,21 +35,22 @@ func way2(nums []int) {
 
 	// Наполняем канал
 	for _, num := range nums {
-		wg.Add(1)
 		ch <- num
 	}
+	close(ch)
 
+	wg.Add(nWorkers)
 	for i := 0; i < nWorkers; i++ {
 		// Запускаем горутины воркеры
 		go func() {
+			defer wg.Done()
 			for num := range ch {
 				fmt.Println(num * num)
-				wg.Done()
 			}
 		}()
 	}
-	wg.Wait()
 
+	wg.Wait()
 }
 
 func main() {

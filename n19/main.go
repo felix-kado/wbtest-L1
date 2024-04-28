@@ -31,9 +31,9 @@ func main() {
 	// Правда у этой реализации есть забаный эффект, что составные символы распадаются, а диакритика может съехать))
 	s1, s2, s3, s4 := "뢴", "🇩🇪", "möp", "главрыба"
 
-	fmt.Printf("%s --- %s \n", s1, Reverse(s1))
-	fmt.Printf("%s --- %s \n", s2, Reverse(s2))
-	fmt.Printf("%s --- %s \n", s3, Reverse(s3))
-	fmt.Printf("%s --- %s \n", s4, Reverse(s4))
+	fmt.Printf("%s --- %s --- %s \n", s1, Reverse(s1), Reverse(Reverse(s1)))
+	fmt.Printf("%s --- %s --- %s \n", s2, Reverse(s2), Reverse(Reverse(s2)))
+	fmt.Printf("%s --- %s --- %s \n", s3, Reverse(s3), Reverse(Reverse(s3)))
+	fmt.Printf("%s --- %s --- %s \n", s4, Reverse(s4), Reverse(Reverse(s4)))
 
 }

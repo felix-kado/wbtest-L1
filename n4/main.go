@@ -42,6 +42,7 @@ func PublishToStream(ctx context.Context, ch chan<- interface{}) {
 		select {
 		case <-ctx.Done():
 			fmt.Println("Gracefully ended publisher")
+			close(ch)
 			return
 		case ch <- getRandData():
 		}
@@ -99,6 +100,5 @@ func main() {
 	// Ждем пока все наши процессы как-то завершатся
 	wg.Wait()
 
-	close(mainCh)
 	fmt.Println("All workers and publisher have exited")
 }

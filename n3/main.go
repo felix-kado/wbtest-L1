@@ -37,32 +37,40 @@ func way1(nums []int) int {
 func way2(nums []int) int {
 	// Тут решение, которое тоже рассчитывает конкуретно,
 	// но количество горутин не зависит от входных данных
+	// Паттер fan-out/fan-in, более приориттный
 
 	var wg sync.WaitGroup
-	nWorkers := 8                   // количество горутин которые будут считать квадраты
-	ch := make(chan int, len(nums)) // Буферизированный канал, из которого горутины смогут брать себе числа для вычисления квадратов
-	resCh := make(chan int, 1)
-	resCh <- 0
+	nWorkers := 8                      // количество горутин которые будут считать квадраты
+	ch := make(chan int, len(nums))    // Буферизированный канал, из которого горутины смогут брать себе числа для вычисления квадратов
+	resCh := make(chan int, len(nums)) // и такой же для результатов
+
 	// Наполняем канал
 	for _, num := range nums {
-		wg.Add(1)
 		ch <- num
 	}
+	close(ch)
 
+	wg.Add(nWorkers)
 	for i := 0; i < nWorkers; i++ {
 		// Запускаем горутины воркеры
 		go func() {
+			defer wg.Done()
 			for num := range ch {
-				summ := <-resCh
-				summ += num * num
-				resCh <- summ
-				wg.Done()
+				resCh <- num * num
 			}
 		}()
 	}
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(resCh)
+	}()
 
-	return <-resCh
+	sum := 0
+	for num := range resCh {
+		sum += num
+	}
+
+	return sum
 }
 
 func main() {
